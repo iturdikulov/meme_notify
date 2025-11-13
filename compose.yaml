@@ -98,6 +98,18 @@ services:
           memory: "${DOCKER_WORKER_MEMORY:-0}"
     profiles: ["worker"]
 
+  flower:
+    <<: *default-app
+    command: celery -A config flower --port=5002
+    entrypoint: []
+    deploy:
+      resources:
+        limits:
+          cpus: "${DOCKER_FLOWER_CPUS:-0}"
+    ports:
+      - "127.0.0.1:5002:5002"
+    profiles: ["web"]
+
   js:
     <<: *default-assets
     command: "../run yarn:build:js"
