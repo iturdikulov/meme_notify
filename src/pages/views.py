@@ -16,7 +16,9 @@ def home(request):
     )
 
     if request.method == "POST":
-        formset = NotificationGeneratorFormSet(request.POST, request.FILES)
+        formset = NotificationGeneratorFormSet(
+            request.POST, form_kwargs={"empty_permitted": False}
+        )
         if formset.is_valid():
             formset.save()
 
