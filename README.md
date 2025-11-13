@@ -65,6 +65,8 @@ cp .env.example .env
 
 ```bash
 docker compose up --build
+# Миграции проекта
+./run manage migrate 
 # Мониторинг, можно запустить в отдельном терминале или с параметром -d
 docker compose up flower
 ```
