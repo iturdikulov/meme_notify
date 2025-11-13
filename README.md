@@ -99,5 +99,5 @@ docker compose up
 Удаляем все (volumes, images):
 
 ```bash
-docker-compose down -v --rmi all
+docker compose down -v --rmi all
 ```
