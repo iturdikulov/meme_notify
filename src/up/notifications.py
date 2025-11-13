@@ -1,12 +1,19 @@
-from time import sleep
+import logging
 import random
+from time import sleep
 
 from config.settings import TASK_NOTIFICATION_MAX_RETRIES
 from up.memes import PHOTOBOX_MEMES_RU
 from up.models import Channel, Notification, Status
 
+logger = logging.getLogger(__name__)
+
 
 class AllSendMethodsFailedError(Exception):
+    pass
+
+
+class ChannelNotificationSendError(Exception):
     pass
 
 
@@ -24,8 +31,9 @@ def send_sms() -> bool:
     if chance(30):
         return True
 
-    raise Exception("Failed to send message with random chance")
-
+    raise ChannelNotificationSendError(
+        "Failed to send message with random chance"
+    )
 
 
 def send_email() -> bool:
@@ -38,7 +46,9 @@ def send_email() -> bool:
     if chance(40):
         return True
 
-    raise Exception("Failed to send message with random chance")
+    raise ChannelNotificationSendError(
+        "Failed to send message with random chance"
+    )
 
 
 def send_telegram() -> bool:
@@ -51,7 +61,9 @@ def send_telegram() -> bool:
     if chance(50):
         return True
 
-    raise Exception("Failed to send message with random chance")
+    raise ChannelNotificationSendError(
+        "Failed to send message with random chance"
+    )
 
 
 def send_notification(initial_channel: Channel, retry_num: int) -> str:
@@ -90,8 +102,8 @@ def send_notification(initial_channel: Channel, retry_num: int) -> str:
             notification.save()
 
             return f"Notification sent via {channel}"
-        except Exception:
-            print("fail")
+        except ChannelNotificationSendError:
+            logger.debug(f"Failed to send notification via {channel}")
 
     # Do not process for specific retries amount and generate notification
     if retry_num >= TASK_NOTIFICATION_MAX_RETRIES:
