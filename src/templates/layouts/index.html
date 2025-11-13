@@ -46,6 +46,14 @@
     </div>
 
     <main class="max-w-screen-lg mx-auto mb-auto">
+      {% if messages %}
+      <ul class="messages">
+        {% for message in messages %}
+        <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+        {% endfor %}
+      </ul>
+      {% endif %}
+
       {% block body %}{% endblock %}
     </main>
 
