@@ -8,6 +8,19 @@
   </div>
 
   <p class="text-center text-lg mt-6">
-    Visualizer
+    <form method="post" action="{% url 'home' %}">
+        {% csrf_token %}
+        {{ formset.as_p }}
+        <button type="submit">Submit</button>
+    </form>
+
+    {% for error in formset.errors %}
+      <span class="error">{{ error }}</span>
+    {% endfor %}
+
+    {% for error in formset.non_form_errors %}
+      <span class="error">{{ error }}</span>
+    {% endfor %}
+
   </p>
 {% endblock %}
