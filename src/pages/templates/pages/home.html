@@ -4,7 +4,9 @@
 {% block title %}Meme Notify{% endblock %}
 
 {% block body %}
-  <div class="flex justify-center pt-24 pb-12 px-2 sm:px-0">
+  <div class="justify-center pt-24 pb-12 px-2 sm:px-0">
+    <p>Выбираем канал ил количество сообщений для генерации, жмем кнопку "Submit"<p>
+    <p>Шансы на отправку сообщений разные, если не смогли отправить для всех типов, задача перезапустится (до 2-х раз включительно):</p>
   </div>
 
   <p class="text-center text-lg mt-6">
@@ -13,14 +15,37 @@
         {{ formset.as_p }}
         <button type="submit">Submit</button>
     </form>
-
-    {% for error in formset.errors %}
-      <span class="error">{{ error }}</span>
-    {% endfor %}
-
-    {% for error in formset.non_form_errors %}
-      <span class="error">{{ error }}</span>
-    {% endfor %}
-
   </p>
+
+  {% if notifications %}
+    <hr>
+    <table class="table-auto text-body">
+        <thead>
+          <tr>
+            <th scope="col" class="px-6 py-3 font-medium">ID</th>
+            <th scope="col" class="px-6 py-3 font-medium">Title</th>
+            <th scope="col" class="px-6 py-3 font-medium">Message</th>
+            <th scope="col" class="px-6 py-3 font-medium">Created</th>
+            <th scope="col" class="px-6 py-3 font-medium">Initial Channel</th>
+            <th scope="col" class="px-6 py-3 font-medium">Actual Channel</th>
+            <th scope="col" class="px-6 py-3 font-medium">Retries</th>
+            <th scope="col" class="px-6 py-3 font-medium">Status</th>
+          </tr>
+        </thead>
+        <tbody>
+            {% for n in notifications %}
+            <tr>
+              <td class="px-6 py-4">{{ n.id }}</td>
+              <td class="px-6 py-4">{{ n.title }}</td>
+              <td class="px-6 py-4">{{ n.message }}</td>
+              <td class="px-6 py-4">{{ n.created_at }}</td>
+              <td class="px-6 py-4">{{ n.initial_channel }}</td>
+              <td class="px-6 py-4">{{ n.actual_channel }}</td>
+              <td class="px-6 py-4">{{ n.retry_num }}</td>
+              <td class="px-6 py-4">{{ n.status }}</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+  {% endif %}
+
 {% endblock %}
