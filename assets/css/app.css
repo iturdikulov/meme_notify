@@ -1,1 +1,13 @@
 @import "tailwindcss" source("/app");
+
+p{
+  margin-bottom: 1rem;
+}
+
+button,
+select,
+input{
+  border: 1px solid #000;
+  border-radius: 4px;
+  padding: 4px;
+}
