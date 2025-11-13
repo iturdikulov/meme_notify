@@ -36,7 +36,7 @@ class Notification(models.Model):
 
 class NotificationRecipient(models.Model):
     notification = models.ForeignKey(Notification, on_delete=models.CASCADE)
-    channel = models.CharField(max_length=20, choices=Channel.choices)
+    initial_channel = models.CharField(max_length=20, choices=Channel.choices)
     recipient_address = models.CharField(max_length=255)
     sent_at = models.DateTimeField(null=True, blank=True)
     delivered_at = models.DateTimeField(null=True, blank=True)
