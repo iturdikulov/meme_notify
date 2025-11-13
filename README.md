@@ -1,5 +1,9 @@
 ## Видео обзор
 
+Кратко обозреваю проект:
+
+https://disk.yandex.ru/i/hgcOe7U6jKhcqg
+
 ## Описание проекта
 
 Django 5.x проект с Celery+Redis для асинхронных задач, PostgreSQL.
