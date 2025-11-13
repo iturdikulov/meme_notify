@@ -14,51 +14,20 @@ class Channel(models.TextChoices):
     TELEGRAM = "telegram", _("Telegram")
 
 
-class Action(models.TextChoices):
-    SENT = "sent", _("Sent")
-    FAILED = "failed", _("Failed")
-    RETRIED = "retried", _("Retried")
-    DELIVERED = "delivered", _("Delivered")
-
-
 class Notification(models.Model):
     title = models.CharField(max_length=255)
     message = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
-    scheduled_at = models.DateTimeField(null=True, blank=True)
+    initial_channel = models.CharField(
+        max_length=20, choices=Channel.choices, default=Channel.EMAIL
+    )
+    actual_channel = models.CharField(
+        max_length=20, choices=Channel.choices, blank=True, null=True
+    )
     status = models.CharField(
         max_length=20, choices=Status.choices, default=Status.PENDING
     )
+    retry_num = models.PositiveSmallIntegerField(default=0)
 
     class Meta:
         db_table = "notification"
-
-
-class NotificationRecipient(models.Model):
-    notification = models.ForeignKey(Notification, on_delete=models.CASCADE)
-    initial_channel = models.CharField(max_length=20, choices=Channel.choices)
-    recipient_address = models.CharField(max_length=255)
-    sent_at = models.DateTimeField(null=True, blank=True)
-    delivered_at = models.DateTimeField(null=True, blank=True)
-    error_message = models.TextField(null=True, blank=True)
-    retry_count = models.IntegerField(default=0)
-    status = models.CharField(
-        max_length=20, choices=Status.choices, default=Status.PENDING
-    )
-
-    class Meta:
-        db_table = "notification_recipient"
-
-
-class NotificationEvent(models.Model):
-    recipient = models.ForeignKey(
-        NotificationRecipient, on_delete=models.CASCADE, related_name="events"
-    )
-    action = models.CharField(max_length=20, choices=Action.choices)
-    status = models.CharField(
-        max_length=20, choices=Status.choices, default=Status.PENDING
-    )
-    created_at = models.DateTimeField(auto_now_add=True)
-
-    class Meta:
-        db_table = "notification_event"
