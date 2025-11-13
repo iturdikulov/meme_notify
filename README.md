@@ -1,6 +1,28 @@
 ## Видео обзор
 
+## Описание проекта
 
+Django 5.x проект с Celery+Redis для асинхронных задач, PostgreSQL. 
+
+Приложения: `pages` (UI/формы), `up` (уведомления). 
+
+На главной странице пользователь генерирует случайные уведомления с начальным
+каналом (SMS/Email/Telegram) с симуляцией сбоев.
+
+### Генерация сообщений
+
+На главной (`pages/views.py`) - форма для `NotificationGenerator` (канал:
+telegram/sms/email). Генерируем задачи для отправки сообщений. Задачи
+выполняются в воркере Celery.
+
+Каждая задача берёт рандомный мем из `PHOTOBOX_MEMES_RU` (заголовок + описание),
+и создаёт уведомление `Notification` (статус=pending, retry=0).
+
+### Доставка
+
+В `send_notification` (`up/notifications.py`): отправляем уведомления по приоритету - initial_channel (задаёт пользователь), затем другие. 
+
+Симуляция отправки: sleep 1-5с, успех отправки случайный (SMS: 30%, Email: 40%, Telegram: 50%). 
 
 ## Быстрый запуск
 
@@ -18,11 +40,11 @@
 1. **Клонирование репозитория и переход в директорию**:
 
 ```bash
-git clone https://github.com/nickjj/docker-django-example meme_notify
+git clone https://github.com/iturdikulov/meme_notify
 cd meme_notify
 ```
 
-2. **Создание .env файла** (оригинальный игнорируется):
+2. **Создаём .env файла** (оригинальный игнорируется):
 
 ```bash
 cp .env.example .env
@@ -57,16 +79,20 @@ docker compose up flower
 
 ### Управление контейнерами
 
-* **Остановка:**
+Остановка:
 
 ```bash
 docker compose down
 ```
 
-* **Запуск повторно:**
+Запуск повторно:
 
 ```bash
 docker compose up
 ```
 
-(будет быстрее, чем первый запуск)
+Удаляем все (volumes, images):
+
+```bash
+docker-compose down -v --rmi all
+```
